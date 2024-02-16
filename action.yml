@@ -1,23 +1,16 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'FRC VendorDep Update Action'
+description: 'Updates FRC vendordeps in your repository.'
+author: 'garrettsummerfi3ld'
 
-# Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
-  icon: 'heart'
-  color: 'red'
+  icon: 'link'
+  color: 'yellow'
 
-# Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
-    required: true
-    default: '1000'
-
-# Define your outputs here.
-outputs:
-  time:
-    description: 'Your output description here'
+  dir:
+    description: 'The directory to look for the vendordeps.'
+    required: false
+    default: './vendordeps'
 
 runs:
   using: node20
