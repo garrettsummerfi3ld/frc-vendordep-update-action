@@ -1,12 +1,17 @@
+import * as path from "path";
+import * as glob from "@actions/glob"
+import * as io from "@actions/io"
+import * as tools from "@actions/tool-cache"
+import * as fs from "fs"
+
 /**
  * Return a list of all JSON files in the given directory.
  * @param {string} dir The directory to search for JSON files.
  * @returns {string[]} A list of all JSON files in the given directory.
  */
-export async function getJSONFiles(dir: string): Promise<string[]> {
-  const fs = require('fs')
-  const path = require('path')
-  const filesList = fs.readdirSync(dir)
+export async function getJsonFiles(dir: string): Promise<string[]> {
+  const globbedJson = await glob.create('${dir}/**/*.json')
+  const filesList = await globbedJson.glob()
   return filesList.filter((file: string) => path.extname(file) === '.json')
 }
 
@@ -15,8 +20,7 @@ export async function getJSONFiles(dir: string): Promise<string[]> {
  * @param {string} filepath The path to the file to open.
  * @returns {JSON} The JSON object of the file.
  */
-export async function getJSON(filepath: string): Promise<string> {
-  const fs = require('fs')
+export async function getJson(filepath: string): Promise<string> {
   const fileContent = fs.readFileSync(filepath, 'utf8')
   const json = JSON.parse(fileContent)
   return json
@@ -28,10 +32,8 @@ export async function getJSON(filepath: string): Promise<string> {
  * @param {string} filepath The path to the file to replace.
  * @returns {Promise<void>} Resolves when the file has been replaced.
  */
-export async function downloadJSON(url: string, filepath: string): Promise<void> {
-  const fetch = require('node-fetch')
-  const response = await fetch(url)
-  const json = await response.json()
-  const fs = require('fs')
+export async function downloadJson(url: string, filepath: string): Promise<void> {
+  const fileDownload = await tools.downloadTool(url)
+  const json = JSON.parse(fs.readFileSync(fileDownload, 'utf8'))
   fs.writeFileSync(filepath, JSON.stringify(json, null, 2))
 }
