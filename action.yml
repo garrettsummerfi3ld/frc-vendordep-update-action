@@ -11,6 +11,10 @@ inputs:
     description: 'The directory to look for the vendordeps.'
     required: false
     default: './vendordeps'
+  dry-run:
+    description: 'Whether to run the action in dry-run mode.'
+    required: false
+    default: 'false'
 
 runs:
   using: node20

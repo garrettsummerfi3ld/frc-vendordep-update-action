@@ -8,21 +8,16 @@ import * as git from './git'
  */
 export async function run(): Promise<void> {
   try {
-    // Get the directory from the inputted arguments for vendordeps
     const files = core.getInput('dir')
     const author = core.getInput('author')
-    const message = core.getInput('message')
 
-    // Get all JSON files in the directory
-    const jsonList = await vendordep.getJsonFiles(files)
+    const currJsonList = await vendordep.getJsonFiles(files)
 
-    // Read the contents of each JSON file as a JSON object, and put the JSON object into a list
-    const jsonObjects = await Promise.all(jsonList.map(async (file: string) => {
+    const currJsonObjects = await Promise.all(currJsonList.map(async (file: string) => {
       return await vendordep.getJson(file)
     }))
 
-    // For each JSON object, log the keys and values
-    jsonObjects.forEach((json: any) => {
+    currJsonObjects.forEach((json: any) => {
       for (const key in json) {
         if (Object.prototype.hasOwnProperty.call(json, key)) {
           core.debug(`${key}: ${json[key]}`)
@@ -30,20 +25,20 @@ export async function run(): Promise<void> {
       }
     })
 
-    // From each JSON object, get the value of the "url" key and download the JSON file at that URL to replace the original file
-    await Promise.all(jsonObjects.map(async (json: any) => {
+    await Promise.all(currJsonObjects.map(async (json: any) => {
       if (json.url) {
         await vendordep.downloadJson(json.url, json.filepath)
       }
     }))
 
-    // For each new JSON file, create a new commit on a new branch with only the changes to a single JSON file
-    await Promise.all(jsonObjects.map(async (json: any) => {
-      if (json.filepath) {
-        await git.createBranch("vendordep/" + json.name + "-" + json.frcYear + "-" + json.version)
-        await git.stageFile(json.filepath)
-        await git.createCommit("Bump " + json.name + " to " + json.version, author)
-      }
+    const newJsonList = await vendordep.getJsonFiles(files)
+
+    const newJsonObjects = await Promise.all(newJsonList.map(async (file: string) => {
+      return await vendordep.getJson(file)
+    }))
+
+    await Promise.all(currJsonObjects.map(async (json: any) => {
+      
     }))
 
   } catch (error) {
