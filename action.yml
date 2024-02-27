@@ -11,6 +11,14 @@ inputs:
     description: 'The directory to look for the vendordeps.'
     required: false
     default: './vendordeps'
+  author:
+    description: 'The author of the commit for updating the vendordeps.'
+    required: false
+    default: 'github-actions[bot] <github-actions[bot]@users.noreply.github.com>'
+  token: 
+    description: 'The token to use for the commit.'
+    required: true
+    default: ${{ github.token }}
   dry-run:
     description: 'Whether to run the action in dry-run mode.'
     required: false
