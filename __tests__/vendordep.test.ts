@@ -40,7 +40,7 @@ describe('vendordep.ts', () => {
 
   it('get JSON', async () => {
     const file = './__tests__/vendordeps/test.json'
-    expect(vendordep.getJson(file)).resolves.not.toThrow()
+    expect(vendordep.getJson(file)).not.toThrow()
   })
 
   it('download JSON', async () => {

@@ -55,7 +55,7 @@ jobs:
         id: test-action
         uses: ./
         with:
-          milliseconds: 2000
+          dir: ./__tests__/vendordeps
 
       - name: Print Output
         id: output
