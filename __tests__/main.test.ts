@@ -41,29 +41,31 @@ describe('action', () => {
 
     await main.run()
     expect(runMock).toHaveReturned()
+  })
 
-    it('sets a failed status', async () => {
-      // Set the action's inputs as return values from core.getInput()
-      getInputMock.mockImplementation((name: string): string => {
-        switch (name) {
-          case 'dir':
-            return './__tests__/vendordeps'
-          case 'author':
-            return ''
-          default:
-            return ''
-        }
-      })
-
-      await main.run()
-      expect(runMock).toHaveReturned()
-
-      // Verify that all of the core library functions were called correctly
-      expect(setFailedMock).toHaveBeenNthCalledWith(
-        1,
-        'Commit author cannot be empty'
-      )
-      expect(errorMock).not.toHaveBeenCalled()
+  it('sets a failed status', async () => {
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string => {
+      switch (name) {
+        case 'dir':
+          return './__tests__/vendordeps'
+        case 'author':
+          return ''
+        case 'dryrun':
+          return 'true'
+        default:
+          return ''
+      }
     })
+
+    await main.run()
+    expect(runMock).toHaveReturned()
+
+    // Verify that all of the core library functions were called correctly
+    expect(setFailedMock).toHaveBeenNthCalledWith(
+      1,
+      'Commit author cannot be empty'
+    )
+    expect(errorMock).not.toHaveBeenCalled()
   })
 })

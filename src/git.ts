@@ -58,6 +58,12 @@ export async function createCommitWithAuthor(
   await git.commit(message, [], { '--author': author })
 }
 
+/**
+ * Create a commit with a given message
+ * @param {string} message The message for the commit
+ * @returns {Promise<void>} Resolves when the commit has been created
+ * @throws {Error} If the commit message is empty
+ */
 export async function createCommit(message: string): Promise<void> {
   if (!message) {
     throw new Error('Commit message cannot be empty')

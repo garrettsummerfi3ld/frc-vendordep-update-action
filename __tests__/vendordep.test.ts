@@ -33,14 +33,14 @@ describe('vendordep.ts', () => {
     const received = receivedAbsolute.map(p => path.relative(process.cwd(), p))
 
     await expect(received).resolves.toEqual([
-      './__tests__/vendordeps/test.json',
-      './__tests__/vendordeps/bad.json'
+      '__tests__/vendordeps/test.json',
+      '__tests__/vendordeps/bad.json'
     ])
   })
 
   it('get JSON', async () => {
     const file = './__tests__/vendordeps/test.json'
-    expect(vendordep.getJson(file)).toHaveReturned()
+    expect(vendordep.getJson(file)).resolves.not.toThrow()
   })
 
   it('download JSON', async () => {
