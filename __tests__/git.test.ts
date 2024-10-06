@@ -45,7 +45,7 @@ describe('git.ts', () => {
   })
 
   it('stages a file', async () => {
-    const filepath = './__tests__/vendordeps/test.json'
+    const filepath = './test/vendordeps/test.json'
 
     await expect(git.stageFile(filepath)).resolves.not.toThrow()
   })

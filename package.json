@@ -1,29 +1,22 @@
 {
-  "name": "typescript-action",
-  "description": "GitHub Actions TypeScript template",
+  "name": "frc-vendordep-update-action",
+  "description": "GitHub Action for updating FRC vendordeps",
   "version": "0.0.0",
   "author": "",
   "private": true,
-  "homepage": "https://github.com/actions/typescript-action",
+  "homepage": "https://github.com/garrettsummerfi3ld/frc-vendordep-update-action",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/garrettsummerfi3ld/frc-vendordep-update-action.git"
   },
   "bugs": {
-    "url": "https://github.com/actions/typescript-action/issues"
+    "url": "https://github.com/garrettsummerfi3ld/frc-vendordep-update-action/issues"
   },
   "keywords": [
-    "actions",
-    "node",
-    "setup"
+    "actions"
   ],
-  "exports": {
-    ".": "./dist/index.js"
-  },
-  "engines": {
-    "node": ">=20"
-  },
   "scripts": {
+    "build": "ncc build src/main.ts --minify",
     "bundle": "npm run format:write && npm run package",
     "ci-test": "jest",
     "coverage": "make-coverage-badge --output-path ./badges/coverage.svg",
@@ -36,35 +29,6 @@
     "all": "npm run format:write && npm run lint && npm run test && npm run coverage && npm run package"
   },
   "license": "MIT",
-  "jest": {
-    "preset": "ts-jest",
-    "verbose": true,
-    "clearMocks": true,
-    "testEnvironment": "node",
-    "moduleFileExtensions": [
-      "js",
-      "ts"
-    ],
-    "testMatch": [
-      "**/*.test.ts"
-    ],
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/dist/"
-    ],
-    "transform": {
-      "^.+\\.ts$": "ts-jest"
-    },
-    "coverageReporters": [
-      "json-summary",
-      "text",
-      "lcov"
-    ],
-    "collectCoverage": true,
-    "collectCoverageFrom": [
-      "./src/**"
-    ]
-  },
   "dependencies": {
     "@actions/core": "^1.10.1",
     "@actions/exec": "^1.1.1",
@@ -73,7 +37,8 @@
     "@actions/http-client": "^2.2.3",
     "@actions/io": "^1.1.3",
     "@actions/tool-cache": "^2.0.1",
-    "simple-git": "^3.26.0"
+    "simple-git": "^3.26.0",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@types/jest": "^29.5.13",
