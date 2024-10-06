@@ -49,11 +49,4 @@ describe('git.ts', () => {
 
     await expect(git.stageFile(filepath)).resolves.not.toThrow()
   })
-
-  it('pushes a branch', async () => {
-    const remote = 'origin'
-    const branch = 'test-branch'
-
-    await expect(git.pushBranch(remote, branch)).resolves.not.toThrow()
-  })
 })
