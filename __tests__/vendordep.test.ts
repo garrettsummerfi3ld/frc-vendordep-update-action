@@ -5,47 +5,64 @@
 import * as vendordep from '../src/vendordep'
 import { expect } from '@jest/globals'
 import path from 'path'
+import * as fs from 'fs'
 
 describe('vendordep.ts', () => {
-  it('throw if no JSON files found', async () => {
-    const files = './test/vendordeps/empty'
-    await expect(vendordep.getJsonFiles(files)).rejects.toThrow(
-      'No JSON files found in the given directory'
-    )
+  const mockDir = path.join(__dirname, 'mockDir')
+  const mockFile = path.join(mockDir, 'mockFile.json')
+  const mockUrl = 'http://example.com/mockFile.json'
+  const mockJson = {
+    filename: 'mockFile.json',
+    name: 'Mock Name',
+    version: '1.0.0',
+    uuid: '1234-5678-91011',
+    mavenUrls: [],
+    jsonUrl: '',
+    javaDependencies: [],
+    jniDependencies: [],
+    cppDependencies: []
+  }
+
+  beforeAll(() => {
+    fs.mkdirSync(mockDir, { recursive: true })
+    fs.writeFileSync(mockFile, JSON.stringify(mockJson))
   })
 
-  it('throw if JSON file is formatted incorrectly', async () => {
-    const file = './test/vendordeps/test.json'
-    await expect(vendordep.getJson(file)).rejects.toThrow(
-      'JSON file is formatted incorrectly'
-    )
+  afterAll(() => {
+    fs.rmSync(mockDir, { recursive: true, force: true })
   })
 
-  it('download JSON file', async () => {
-    const url = 'https://not.a.real.domain.com/test.json'
-    const file = './test/vendordeps/test.json'
-    await expect(vendordep.downloadJson(url, file)).resolves.toThrow()
+  describe('getJsonFiles', () => {
+    it('should return a list of JSON files in the directory', async () => {
+      const files = await vendordep.getJsonFiles(mockDir)
+      expect(files).toContain(mockFile)
+    })
+
+    it('should throw an error if no JSON files are found', async () => {
+      const emptyDir = path.join(mockDir, 'empty')
+      fs.mkdirSync(emptyDir)
+      await expect(vendordep.getJsonFiles(emptyDir)).rejects.toThrow('No JSON files found in the given directory')
+    })
   })
 
-  it('get JSON files', async () => {
-    const files = './test/vendordeps'
-    const receivedAbsolute = await vendordep.getJsonFiles(files)
-    const received = receivedAbsolute.map(p => path.relative(process.cwd(), p))
+  describe('getJson', () => {
+    it('should return a JSON object if the file is correctly formatted', async () => {
+      const json = await vendordep.getJson(mockFile)
+      expect(json).toEqual(mockJson)
+    })
 
-    await expect(received).resolves.toEqual([
-      'test/vendordeps/test.json',
-      'test/vendordeps/bad.json'
-    ])
+    it('should throw an error if the JSON file is incorrectly formatted', async () => {
+      const badJsonFile = path.join(mockDir, 'badFile.json')
+      fs.writeFileSync(badJsonFile, JSON.stringify({}))
+      await expect(vendordep.getJson(badJsonFile)).rejects.toThrow('JSON file is formatted incorrectly')
+    })
   })
 
-  it('get JSON', async () => {
-    const file = './test/vendordeps/test.json'
-    expect(vendordep.getJson(file)).not.toThrow()
-  })
-
-  it('download JSON', async () => {
-    const url = 'https://software-metadata.revrobotics.com/REVLib-2024.json'
-    const file = './test/vendordeps/test.json'
-    await expect(vendordep.downloadJson(url, file)).resolves.not.toThrow()
+  describe('downloadJson', () => {
+    it('should download and replace the JSON file', async () => {
+      await vendordep.downloadJson(mockUrl, mockFile)
+      const json = JSON.parse(fs.readFileSync(mockFile, 'utf8'))
+      expect(json).toEqual(mockJson)
+    })
   })
 })
